@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Akka.Actor;
-using Akka.Event;
+using Akka.Util.Internal;
 using Learning.Akka.Messages;
+using Learning.Akka.Model;
 
 namespace Learning.Akka.Actors
 {
@@ -19,7 +16,12 @@ namespace Learning.Akka.Actors
         private void ProcessRequest(PricingRequest request)
         {
             Console.WriteLine(@"Finding stock prices for {0}", request.CompanyCode);
-            var response = new PricingResponse(request.CompanyCode, 110.2, "NASDAQ");
+
+            IActorRef pricingLookUpActorRef = Context.ActorOf(Props.Create<PricingLookupActor>(), "PriceLookup");
+            var data = pricingLookUpActorRef.Ask(request).Result;
+            var json = data.AsInstanceOf<RootObject>();
+            var price = json.data[0].sellPrice1 == "-" ? Decimal.Zero : Decimal.Parse(json.data[0].sellPrice1);
+            var response = new PricingResponse(request.CompanyCode, price  , "NSE");
             Sender.Tell(response);
         }
     }
