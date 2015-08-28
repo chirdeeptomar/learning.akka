@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 namespace Learning.Akka.Actors
 {
     /// <summary>
-    /// Actor to do talk to third party stock data provider
+    /// Actor to talk to third party stock data provider
     /// </summary>
     public class PricingLookupActor : ReceiveActor
     {

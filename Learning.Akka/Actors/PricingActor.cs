@@ -17,7 +17,7 @@ namespace Learning.Akka.Actors
         {
             Console.WriteLine(@"Finding stock prices for {0}", request.CompanyCode);
 
-            IActorRef pricingLookUpActorRef = Context.ActorOf(Props.Create<PricingLookupActor>(), "PriceLookup");
+            IActorRef pricingLookUpActorRef = Context.ActorOf(Props.Create<PricingLookupActor>(), "PriceLookup" + Guid.NewGuid());
             var data = pricingLookUpActorRef.Ask(request).Result;
             var json = data.AsInstanceOf<RootObject>();
             var price = json.data[0].sellPrice1 == "-" ? Decimal.Zero : Decimal.Parse(json.data[0].sellPrice1);
